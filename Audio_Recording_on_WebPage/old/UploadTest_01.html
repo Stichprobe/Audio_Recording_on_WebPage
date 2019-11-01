@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0;" />
+<link rel="stylesheet" media="screen"
+	href="./Beispiel:SELFHTML-Beispiel-Grundlayout.css" />
+<title>JS - File Upload-1</title>
+<script>
+	function dateiauswahl(evt) {
+		// FileList-Objekt des input-Elements auslesen, auf dem 
+		// das change-Event ausgelöst wurde (event.target)
+		var files = evt.target.files;
+
+		// Deklarierung eines Array Objekts mit Namen "fragmente". Hier werden die Bausteine
+		// für die erzeugte Listenausgabe gesammelt.
+		var fragmente = [];
+		// Zählschleife; bei jedem Durchgang den Namen, Typ und 
+		// die Dateigröße der ausgewählten Dateien zum Array hinzufügen
+		for (var i = 0, f; f = files[i]; i++) {
+			fragmente.push('<li><strong>', f.name, '</strong> (', f.type
+					|| 'n/a', ') - ', f.size, ' bytes</li>');
+		}
+		// Alle Fragmente im fragmente Array aneinanderhängen, in eine unsortierte Liste einbetten
+		// und das alles als HTML-Inhalt in das output-Elements mit id='dateiListe' einsetzen.
+		document.getElementById('dateiListe').innerHTML = '<ul>'
+				+ fragmente.join('') + '</ul>';
+	}
+
+	// UI-Events erst registrieren wenn das DOM bereit ist!
+	document.addEventListener("DOMContentLoaded", function() {
+		// Falls neue Eingabe, neuer Aufruf der Auswahlfunktion
+		document.getElementById('dateien').addEventListener('change',
+				dateiauswahl, false);
+	});
+</script>
+</head>
+<body>
+	<h1>JS - File Upload-1</h1>
+	<main>
+	<p>Es wird ein Eingabefeld erzeugt, das Attribut multiple sorgt
+		dafür, dass im Auswahldialog mehrere Dateien ausgewählt werden können
+	</p>
+	<p>
+		<input type="file" id="dateien" name="files[]" multiple />
+	</p>
+	<p>Ein Ausgabefeld zur Anzeige der ausgewählten Dateien:</p>
+	<output id="dateiListe"></output> </main>
+</body>
+</html>

@@ -1,0 +1,108 @@
+ 
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<title>JS - File Upload-1</title>
+
+<script type="text/javascript">
+<!--
+
+//-->
+	function uploadSOund () {
+		
+		var fd = new FormData();
+		fd.append('name', 'test.wav');
+		fd.append('data', soundBlob);
+		$.ajax(
+			{
+			    type: 'POST',
+			    url: '/upload.php',
+			    data: fd,
+			    processData: false,
+			    contentType: false
+			}
+		).done(function(data) {
+		       console.log(data);
+			}
+		);
+	};
+		
+		
+		// javascript function that uploads a blob to upload.php
+		function uploadBlob(){
+		    // create a blob here for testing
+		    var blob = new Blob(["i am a blob üüüüüääääääää"]);
+		    console.log("create filereader...");
+		    //var blob = yourAudioBlobCapturedFromWebAudioAPI;// for example   
+		    var reader = new FileReader();
+		    
+		    // this function is triggered once a call to readAsDataURL returns
+		    reader.onload = function(event){
+		    	console.log("this function is triggered once a call to readAsDataURL returns");
+		        var fd = new FormData();
+		        fd.append('name', 'test.txt');
+		        //fd.append('file', event.target.result);
+		        fd.append('datei', blob, 'test.xyz');
+		        console.log(fd);
+		        $.ajax({
+		            type: 'POST',
+		            url:  'http://audio.stichprobe.eu/upload.php',
+		            data: fd,
+		            dataType: "text",
+		            crossDomain: true,
+		            headers: {
+		                "Access-Control-Allow-Origin" 
+		                	: "*",
+		                "Access-Control-Allow-Methods" 
+		                	: "GET,POST,PUT,DELETE,OPTIONS",
+		                "Access-Control-Allow-Headers"
+		                	: "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+		            },
+		            processData: false,
+		            contentType: false
+		        }).done(function(data) {
+		            // print the output from the upload.php script
+		            console.log(data);
+		        });
+		    };  
+		    
+		      //reader.onload = function() {
+		      //  console.log(reader.result);
+		      //};
+
+		      reader.onerror = function() {
+		        console.log(reader.error);
+		      };
+		    
+		    console.log("trigger the read from the reader...");
+		    // trigger the read from the reader...
+		    reader.readAsDataURL(blob);
+		    //reader.readAsText (blob);
+		    console.log("... reader.readAsDataURL is triggered");
+		    
+		    
+		}
+		
+		
+</script>
+</head>
+
+<body>
+	<form>
+	<button id="send" type="button">Send</button>
+	</form>
+
+</body>
+
+<script type="text/javascript">
+	const sendButton = document.getElementById('send');
+
+	sendButton.addEventListener('click', function() {
+			uploadBlob ();
+			//statusText.innerHTML = "clicked";
+		});
+
+</script>
+
+</html>

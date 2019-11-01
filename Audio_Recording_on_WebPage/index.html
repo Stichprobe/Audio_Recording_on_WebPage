@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Audio Test</title>
+
+
+
+<script>
+
+
+</script>
+
+
+
+</head>
+<body>
+
+	<a id="download">Download</a>
+	<button id="stop">Stop</button>
+	<button id="start" disabled>Start</button>
+	<br />
+	<div id="status">????</div>
+
+
+
+</body>
+
+<script>
+
+		const downloadLink = document.getElementById('download');
+		const stopButton = document.getElementById('stop');
+		const startButton = document.getElementById('start');
+		const statusText = document.getElementById('status');
+		//statusText.innerHTML = "waiting....";
+		//console.log (document.featurePolicy.allowedFeatures());
+
+	
+		/// XXXXXXXXXXXXXXXXXXXXX
+		stopButton.addEventListener('click', function() {
+			stopRecording ();
+			startButton.disabled = false;
+			stopButton.disabled  = true;
+		});
+		
+		startButton.addEventListener('click', function() {
+			startRecording ();
+			startButton.disabled = true;
+			stopButton.disabled  = false;			
+		});		
+		
+		
+		//==============================================================
+		
+		// INIT
+		let shouldStop        = false;
+		let stopped           = false;	
+		let recordedChunks    = [];
+
+
+
+		//MediaDevice Stream Init
+		let thestream         = null;
+		let media_constraints = { video: false, audio: true };		
+		
+		//Init the Media Recorder
+		const media_options   = {mimeType : 'audio/webm'};		
+		let mediaRecorder     = null;
+		
+		
+		//==============================================================
+		const stopRecording = function () {
+			shouldStop = true;
+			status("clicked");
+		};
+
+		
+		const initMediaRecorder = function () {
+			log("media device success...");
+	
+			//const mediaRecorder = new MediaRecorder(stream, media_options);
+			mediaRecorder = new MediaRecorder(thestream, media_options);
+			mediaRecorder.start(1000); // maximale sample time
+			
+			log("media recorder init/start done ...");			
+		};
+		
+		const ondataavailable = function(e) {
+			log("Handling on data available");
+			if (e.data.size > 0) {
+				recordedChunks.push(e.data);
+				console.log(e.data);
+			}
+
+			if (shouldStop === true && stopped === false) {
+				mediaRecorder.stop();
+				stopped = true;
+				status ("clicked... and ... stopped");
+			}
+		};
+		
+		const onerror = function(e) {
+	        log('Error: ' + e);
+	    };
+	    
+	    const onstart = function() {
+	    	log('Started, state = ' + mediaRecorder.state);
+	    };
+	    
+	    const onstop = function(e) {
+	    	
+	    	let href = URL.createObjectURL(new Blob(recordedChunks));
+	    	
+			downloadLink.href = href;
+			downloadLink.download = 'acetest.wav';
+		
+			log('media recorder stopped');
+			//statusText.innerHTML = "stopped";
+			status ("stopped");
+		};
+		
+		const onlog = function (message) {
+			console.log(message);
+		};
+		const onstatus = function (html_message) {
+			//####################################
+			//# TODO: change to on status change (outside)
+			statusText.innerHTML = html_message;
+		};
+		
+		const log = function (message) {
+			onlog (message);
+		};
+		const status = function (html_message) {
+			onstatus (html_message);
+		};
+
+		// MediaDevice successfully retrieved
+		const handleSuccess = function(stream) {
+			
+			//######################################################
+			//# TODO: Create Stream should be done only once
+			thestream = stream
+		}
+		
+		const reinitMediaRecorder =  function () {
+			//=====================================================
+			// should be seperated
+			initMediaRecorder (thestream);
+			
+			// Event handler
+			mediaRecorder.ondataavailable = ondataavailable;
+
+		    mediaRecorder.onerror = onerror;
+		    
+		    mediaRecorder.onstart = onstart;
+			
+			mediaRecorder.onstop = onstop;
+
+			
+			//console.log ("media recorder started...");
+			log ("media recorder started...");
+		};
+
+		
+		const startRecording = function () {
+						
+			status("waiting....");
+			log (document.featurePolicy.allowedFeatures());		
+			
+			recordedChunks = [];
+			shouldStop     = false;
+			stopped        = false;
+			
+			
+			//=====================================================
+			// If thestream is available, the next lines should not be called
+			if (thestream == null) {
+				navigator.mediaDevices.getUserMedia(media_constraints)
+					.then(handleSuccess)
+					.catch(e => console.error(e));
+			}
+			reinitMediaRecorder ();
+		};		
+		
+	startRecording ();
+	</script>
+
+<script>
+
+</script>
+</html>

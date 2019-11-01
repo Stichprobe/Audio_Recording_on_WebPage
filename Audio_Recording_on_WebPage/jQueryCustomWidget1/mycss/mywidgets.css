@@ -1,0 +1,34 @@
+    #my-widget {
+        width: 100px;
+        background-color: bisque;
+        position: absolute;
+        top: -50px;
+        left: 0px;
+        display: none;
+    }
+
+    #my-widget .my-widget-minus {
+        float: left;
+    }
+
+    #my-widget .my-widget-minus:focus {
+        box-shadow: unset;
+    }
+
+    #my-widget .my-widget-value {
+        float: left;
+        margin: 0;
+        padding: 0;
+        width: 28px;
+        height: 38px;
+        text-align: center;
+        line-height: 38px;
+    }
+
+    #my-widget .my-widget-plus {
+        float: right;
+    }
+
+    #my-widget .my-widget-plus:focus {
+        box-shadow: unset;
+    }

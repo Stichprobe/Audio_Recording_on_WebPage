@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Audio Test</title>
+
+
+
+<script>
+
+
+</script>
+
+
+
+</head>
+<body>
+
+	<a id="download">Download</a>
+	<button id="stop">Stop</button>
+	<br />
+	<div id="status">????</div>
+
+
+
+</body>
+
+<script>
+		let shouldStop = false;
+		let stopped = false;
+		const downloadLink = document.getElementById('download');
+		const stopButton = document.getElementById('stop');
+		const statusText = document.getElementById('status');
+		statusText.innerHTML = "waiting....";
+		console.log (document.featurePolicy.allowedFeatures());
+
+		stopButton.addEventListener('click', function() {
+			shouldStop = true;
+			statusText.innerHTML = "clicked";
+		});
+
+		// MediaDevice successfully retrieved
+		const handleSuccess = function(stream) {
+			
+			console.log("media device success...");
+			
+			//Init the Media Recorder
+			const options = {
+				mimeType : 'audio/webm'
+			};
+			const recordedChunks = [];
+			const mediaRecorder = new MediaRecorder(stream, options);
+			mediaRecorder.start(1000); // maximale sample time
+			
+			console.log("media recorder init/start done ...");
+			
+			// Event handler
+			mediaRecorder.ondataavailable = function(e) {
+				console.log("Handling on data available");
+				if (e.data.size > 0) {
+					recordedChunks.push(e.data);
+					console.log(e.data);
+				}
+
+				if (shouldStop === true && stopped === false) {
+					mediaRecorder.stop();
+					stopped = true;
+					statusText.innerHTML = "clicked... and ... stopped";
+				}
+			};
+
+		    mediaRecorder.onerror = function(e) {
+		        log('Error: ' + e);
+		        console.log('Error: ', e);
+		    };
+		    
+		    mediaRecorder.onstart = function() {
+		    	console.log('Started, state = ' + mediaRecorder.state);
+		    };
+			
+			mediaRecorder.onstop = function(e) {
+				downloadLink.href = URL
+						.createObjectURL(new Blob(recordedChunks));
+				downloadLink.download = 'acetest.wav';
+
+				console.log('media recorder stopped');
+				statusText.innerHTML = "stopped";
+			};
+
+			
+			console.log ("media recorder started...");
+		};
+
+		var constraints = { video: false, audio: true };
+		
+		navigator.mediaDevices.getUserMedia(constraints)
+			.then(handleSuccess)
+			.catch(e => console.error(e));
+	</script>
+
+<script>
+
+</script>
+</html>

@@ -1,0 +1,105 @@
+
+
+<script type="text/javascript" src="wolfscripts.js"></script>
+
+
+<head>
+
+<link rel="stylesheet" href="./style.css" type="text/css" media="all" />
+<title>stichprobe.eu Eingabe</title>
+<link rel="shortcut icon" href="./favicon.ico" />
+</head>
+
+<body>
+
+	<div id="symfony-wrapper">
+		<div id="symfony-header">
+			<a href=""> <img src="./logo.gif" alt="eingabe.stichprobe.eu">
+			</a>
+
+		</div>
+		<ul id="menu">
+			<li><a href="./de">[Deutsch]</a></li>
+			<li><a href="./en">[English]</a></li>
+		</ul>
+
+
+
+
+
+		<div style="clear: both"></div>
+
+
+		<div class="symfony-content">
+			<div class="eingabenr">Eingabe 1 von 3</div>
+			<br>
+			<br>
+			<!--  QUESTION TEXT START-->
+			<br> Bitte nachsprechen: <br>
+			<!--  QUESTION TEXT END -->
+			<!--  SOUNDPLAYER START -->
+			<audio controls>
+				<source src="http://hodis-eingabe.stichprobe.eu/doc/Chinese7_01.mp3"
+					type="audio/mpeg">
+				Your browser does not support the audio tag.
+			</audio>
+			<!--  SOUNDPLAYER END -->
+			
+			<!--  QUESTIONINFO START  -->
+			<!--  QUESTIONINFO END  -->
+			
+			<!--  QUESTIONSOUNDTEXT START  -->
+			<!--  QUESTIONSOUNDTEXT END  -->
+			
+			<!-- FORM -->
+			
+			
+			<form 
+				enctype="multipart/form-data" 
+				name="katzeaenderung"
+				method="post" 
+				action="/ESound_aufnehmen.php">
+				
+				<input 
+					type="hidden" 
+					name="ID" 
+					value="785010"> 
+				
+				<input
+					type="hidden" 
+					name="nextKatze" 
+					value="785011">
+				
+				<input
+					type="hidden" 
+					name="maxKatzen" 
+					value="3"> 
+					
+				<input
+					type="hidden" 
+					name="Katzennummer" 
+					value="1"> 
+				<input
+					type="hidden" 
+					name="buttonaction" 
+					value="weiter">
+<!-- ERROR MSG START -->
+<!-- ERROR MSG STOP -->
+
+				<!-- MAX_FILE_SIZE muss vor dem Dateiupload Input Feld stehen -->
+				<input type="hidden" name="MAX_FILE_SIZE" value="10000000" />
+				<!-- Der Name des Input Felds bestimmt den Namen im $_FILES Array -->
+				<br>
+				<br>Bitte nehmen Sie entsprechend der Anweisung eine Sounddatei
+				auf und laden diese anschließend hoch.<br>Bitte beachten Sie,
+				dass nur Dateien im mp3-Format möglich sind.<br>
+				<br>Soundfile: <input name="userfile" type="file" /> <input
+					type="submit" value="Senden" />
+
+			</form>
+
+		</div>
+		<br>
+		<br>
+</body>
+</html>

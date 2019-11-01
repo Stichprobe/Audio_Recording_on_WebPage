@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="sendblob.js"></script>
+<script type="text/javascript" src="audiorecorder.js"></script>
+
+<script>
+
+    function getTimeStamp () {
+    	return new Date().toISOString().replace(/T/, ' ')
+    	 .replace(/\..+/, '')
+    	 .split(' ').join('')
+    	 .split(':').join('')
+    	 .split('-').join('');
+    }
+
+	const text = 'ANDY';
+
+	dataType     = "text";
+    url          = 'http://audio.stichprobe.eu/upload.php';
+    basefilename = "sample";
+	filename     = "test4.wav";
+	
+	
+	timeStamp = getTimeStamp ();
+
+</script>
+
+
+</head>
+<body>
+
+	<form>
+		<button id="start" type="button">Start</button>
+		<button id="stop" disabled type="button">Stop</button>
+		<div id = 'statusText'>
+		    waiting for permission
+		</div>
+		
+		<!-- 
+		<div id = 'logAudioText' 
+			style = 'resize: vertical; overflow: auto;'>
+		    LOG AUDIO EVENTS:
+		</div>		
+		-->
+		
+		<div>
+		<a id="download">Download</a>
+		</div>
+		
+		<div>
+		<button id="send" type="button" disabled>send</button>
+		</div>
+	</form>
+
+
+</body>
+
+<script type="text/javascript">
+
+	const startButton   = document.getElementById('start');
+	const stopButton    = document.getElementById('stop');
+	const statusText    = document.getElementById('statusText');
+	//const logAudioText  = document.getElementById('logAudioText');
+	const downloadLink  = document.getElementById('download');
+	const sendButton    = document.getElementById('send');
+	
+	let last_blob = null;
+	let blob_count = 0;
+
+	const onstatus = function (html_message) {
+		//####################################
+		//# TODO: change to on status change (outside)
+		statusText.innerHTML = html_message;
+	};
+	
+	const logaudioCallbacks = function (text) {
+		//logAudioText.innerHTML = logAudioText.innerHtml + '<p>' + text + '</p>';
+	}
+
+	var audiorecorder = new AudioRecorder ();
+	
+	audiorecorder.onEndCalc = function (status) {
+		onstatus (status);
+	}
+	
+	audiorecorder.onStatus = function (status) {
+		//onstatus (status);
+		onstatus (blob_count);
+		blob_count = blob_count +1;
+	}	
+	
+	audiorecorder.onstart = function () {
+		logaudioCallbacks ("START");
+		console.log ("############# START")
+		
+		stopButton.disabled  = false;
+		startButton.disabled = true;
+	}
+	
+	audiorecorder.onstop = function (e, blob) {
+		logaudioCallbacks ("STOP");
+
+		timeStamp = getTimeStamp ();
+		filename  = basefilename + "_" + timeStamp + ".wav"
+		blob_count = 0;
+		
+		stopButton.disabled  = true;
+		startButton.disabled = false;
+		
+		let href = URL.createObjectURL(blob);
+		downloadLink.href     = href;
+		downloadLink.download = filename;
+		
+		sendButton.disabled = false;
+		
+		last_blob = blob;
+
+	}
+	
+	startButton.onclick = function() {
+		onstatus ("HALLO:"+audiorecorder.status);
+		audiorecorder.startRecording();
+	};
+	
+	stopButton.onclick = function() {
+		onstatus ("STOP trigerred:"+audiorecorder.status);
+		audiorecorder.stopRecording();
+	};
+	
+	
+	
+	//===================================================
+	sendButton.onclick = function() {
+		onstatus ("SEND trigerred");
+		
+		additionalFormData = new FormData();
+		additionalFormData.append('XXXXX', 'XXXXXX');
+		
+		blobUploader = new BlobUploader (dataType, url, filename, additionalFormData);
+		blobUploader.onstop = function (e) {
+			onstatus ("Sample sent: " + e);
+		}
+		blobUploader.uploadBlob (last_blob);
+	};
+</script>
+
+</html>

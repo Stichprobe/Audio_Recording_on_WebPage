@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="ISO-8859-1">
+		<title>Insert title here</title>
+		
+		<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+		<script type="text/javascript" src="js/sendblob.js"></script>
+		<script type="text/javascript" src="js/audiorecorder.js"></script>
+		<script type="text/javascript" src="js/tools.js"></script>
+		<script type="text/javascript" src="js/formscript.js"></script>
+		<script type="text/javascript" src="js/formdefinition.js"></script>
+	
+		<script>
+			filenamebase = getParamValue('F') || "SAMPLE";
+			upload_url   = getParamValue('U') || "https://eingabe.stichprobe.eu/audio/www/upload.php";
+			message      = getParamValue('M') || "";
+		</script>		
+	
+		
+		<script>
+			const server = 'zizibe';
+			formdef = getformdef (server);
+			<!-- HERE WE CAN ADD ADDTIONIONAL DATA SENT TO SERVER -->
+
+		
+			
+			
+			<!-- FORM DEFINITION START -->
+			additionalFormData = new FormData();
+			additionalFormData.append('ZZZZZZ', 'ZZZZZ');
+			formdef =  new FormDefinition (			
+				dataType            = "text",
+			    url                 = upload_url, //'https://eingabe.stichprobe.eu/audio/www/upload.php',
+			    basefilename        = filenamebase, //"recording",
+				filename            = "test4.wav",
+				additionalFormData  = additionalFormData,
+				addtimestamp        = false,
+				message				= message
+			)
+			<!-- FORM INIT/INCLUDE END -->
+		</script>
+	
+	</head>
+	<body>
+		<!-- FORM START -->
+		<div w3-include-html='parts/form_part.html' id="myform"></div>
+		<!-- FORM END -->
+	</body>
+	
+	
+
+	
+	<script>
+	
+
+	
+		<!-- FORM INIT/INCLUDE START -->
+		document.addEventListener("DOMContentLoaded", function() {
+			<!-- include all htmlparts having a attribute named 'w3-include-html' -->
+			includeHTML();
+			//abc();
+			afterInit (document);
+
+
+		});
+		<!-- FORM INIT/INCLUDE END -->
+	</script>
+
+</html>
